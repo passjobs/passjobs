@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET Prep Web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Custom styles if needed, though Tailwind is preferred */
+        /* Style for progress bar text */
+        .progress-text {
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* text-gray-500 */
+            margin-top: 0.25rem; /* mt-1 */
+        }
+         /* Style for expandable content */
+        .expandable-content {
+            display: none; /* Hidden by default */
+            padding-top: 1rem; /* pt-4 */
+            border-top: 1px solid #e5e7eb; /* border-t border-gray-200 */
+            margin-top: 1rem; /* mt-4 */
+        }
+        .expanded .expandable-content {
+            display: block; /* Show when expanded */
+        }
+        .expandable-header {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div id="app-container" class="min-h-screen flex flex-col">
+
+        <div id="app-layout" class="page-section flex-grow flex flex-col">
+            <header class="bg-blue-600 text-white p-4 shadow-md">
+                <h1 id="app-title" class="text-xl font-bold text-center">Dashboard</h1>
+            </header>
+
+            <main class="flex-grow overflow-y-auto p-4">
+                <div id="dashboard-section" class="content-section">
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Welcome, Future Doctor!</h2>
+                        <p class="text-gray-600">Stay focused on your NEET preparation.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-4 cursor-pointer hover:bg-gray-50" onclick="navigateTo('study-planner-section', 'Study Planner')">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-alt text-blue-600 text-lg mr-3"></i>
+                                <span class="text-gray-800 font-medium">Study Planner</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+
+                     <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded w-full mb-6 flex items-center justify-center" onclick="navigateTo('doubt-chat-section', 'Doubt Chat')">
+                         <i class="fas fa-question-circle text-xl mr-2"></i>
+                         Ask a Doubt
+                    </button>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:bg-gray-50" onclick="navigateTo('mock-test-section', 'Mock Tests')">
+                            <i class="fas fa-assignment text-orange-500 text-4xl mb-3"></i>
+                            <p class="text-gray-800 font-medium">Mock Tests</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:bg-gray-50" onclick="navigateTo('flashcards-section', 'Flashcards')">
+                            <i class="fas fa-sticky-note text-green-500 text-4xl mb-3"></i>
+                             <p class="text-gray-800 font-medium">Flashcards</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Recent Activity</h2>
+                        <p class="text-gray-600">No recent activity yet. Start a test or study session!</p>
+                        </div>
+
+                </div>
+
+                <div id="study-planner-section" class="content-section hidden">
+                     <h2 class="text-2xl font-bold text-gray-800 mb-6">60-Day Study Plan</h2>
+                     <div id="study-plan-list">
+                         </div>
+                </div>
+
+                <div id="mock-test-section" class="content-section hidden text-center p-8">
+                     <i class="fas fa-assignment text-gray-500 text-6xl mb-4"></i>
+                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Mock Test Section</h2>
+                     <p class="text-gray-600">Mock tests will be available here soon!</p>
+                     </div>
+
+                <div id="flashcards-section" class="content-section hidden p-4">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Flashcard Subjects</h2>
+                     <div id="flashcards-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                         </div>
+                </div>
+
+                <div id="doubt-chat-section" class="content-section hidden text-center p-8">
+                     <i class="fas fa-comments text-teal-500 text-6xl mb-4"></i>
+                     <h2 class="text-2xl font-bold text-gray-800 mb-2">AI Doubt Assistant</h2>
+                     <p class="text-gray-600">Chat with the AI assistant to clear your doubts!</p>
+                     </div>
+
+                <div id="profile-section" class="content-section hidden p-6">
+                    <div class="flex flex-col items-center mb-8">
+                        <div class="w-24 h-24 rounded-full bg-blue-200 flex items-center justify-center mb-4">
+                            <i class="fas fa-user text-blue-600 text-5xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Aakash Sharma</h2>
+                        <p class="text-gray-600">aakash.sharma@example.com</p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Overall Progress</h3>
+                         <div class="w-full bg-gray-200 rounded-full h-4">
+                            <div class="bg-green-500 h-4 rounded-full" style="width: 65%"></div> </div>
+                         <p class="progress-text">65% Completed</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md mb-4 cursor-pointer hover:bg-gray-50">
+                         <div class="flex items-center justify-between p-4" onclick="alert('Settings Coming Soon!')">
+                            <div class="flex items-center">
+                                <i class="fas fa-cog text-gray-600 text-lg mr-3"></i>
+                                <span class="text-gray-800 font-medium">Settings</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+
+                     <div class="bg-white rounded-lg shadow-md mb-8 cursor-pointer hover:bg-gray-50">
+                         <div class="flex items-center justify-between p-4" onclick="alert('Notifications Coming Soon!')">
+                            <div class="flex items-center">
+                                <i class="fas fa-bell text-gray-600 text-lg mr-3"></i>
+                                <span class="text-gray-800 font-medium">Notifications</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+
+                    </div>
+
+            </main>
+
+            <footer class="bg-white p-2 shadow-t flex justify-around items-center sticky bottom-0 w-full">
+                <button class="nav-item flex flex-col items-center text-blue-600" data-section="dashboard-section" data-title="Dashboard">
+                    <i class="fas fa-dashboard text-xl"></i>
+                    <span class="text-xs">Dashboard</span>
+                </button>
+                 <button class="nav-item flex flex-col items-center text-gray-500" data-section="mock-test-section" data-title="Mock Tests">
+                    <i class="fas fa-assignment text-xl"></i>
+                    <span class="text-xs">Mock Test</span>
+                </button>
+                 <button class="nav-item flex flex-col items-center text-gray-500" data-section="flashcards-section" data-title="Flashcards">
+                    <i class="fas fa-sticky-note text-xl"></i>
+                    <span class="text-xs">Flashcards</span>
+                </button>
+                 <button class="nav-item flex flex-col items-center text-gray-500" data-section="doubt-chat-section" data-title="Doubt Chat">
+                    <i class="fas fa-comments text-xl"></i>
+                    <span class="text-xs">Doubt Chat</span>
+                </button>
+                 <button class="nav-item flex flex-col items-center text-gray-500" data-section="profile-section" data-title="Profile">
+                    <i class="fas fa-user text-xl"></i>
+                    <span class="text-xs">Profile</span>
+                </button>
+            </footer>
+        </div>
+
+    </div>
+
+    <script>
+        // Removed loginPage, loginForm references
+        const appLayout = document.getElementById('app-layout');
+        const appTitle = document.getElementById('app-title');
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+        const studyPlanList = document.getElementById('study-plan-list');
+        const flashcardsGrid = document.getElementById('flashcards-grid');
+
+        // Dummy Study Plan Data (Same as Flutter)
+        const dailyPlans = [
+            {'day': 1, 'topic': 'Physics: Units and Measurements', 'details': 'Study theory, solve NCERT examples.'},
+            {'day': 2, 'topic': 'Physics: Error Analysis & Significant Figures', 'details': 'Practice problems on error calculation.'},
+            {'day': 3, 'topic': 'Chemistry: Basic Concept of Chemistry', 'details': 'Mole concept, stoichiometry.'},
+            {'day': 4, 'topic': 'Chemistry: Atomic Structure', 'details': 'Bohr\'s model, quantum numbers.'},
+            {'day': 5, 'topic': 'Biology: The Living World', 'details': 'Biodiversity, taxonomy.'},
+            {'day': 6, 'topic': 'Biology: Biological Classification', 'details': 'Five kingdom classification.'},
+            {'day': 7, 'topic': 'Revision & Practice Test (Day 1-6)', 'details': 'Revise all topics and take a short test.'},
+            {'day': 8, 'topic': 'Physics: Motion in a Straight Line', 'details': 'Kinematics equations, graphs.'},
+            {'day': 9, 'topic': 'Physics: Motion in a Plane', 'details': 'Projectile motion, circular motion.'},
+            {'day': 10, 'topic': 'Chemistry: Chemical Bonding', 'details': 'VSEPR theory, hybridization.'},
+            {'day': 11, 'topic': 'Chemistry: States of Matter', 'details': 'Gas laws, liquid state.'},
+            {'day': 12, 'topic': 'Biology: Plant Kingdom', 'details': 'Algae, Bryophytes, Pteridophytes.'},
+            {'day': 13, 'topic': 'Biology: Animal Kingdom', 'details': 'Classification up to phylum.'},
+            {'day': 14, 'topic': 'Revision & Practice Test (Day 8-13)', 'details': 'Revise and test.'},
+             {'day': 15, 'topic': 'Physics: Laws of Motion', 'details': 'Newton\'s laws, friction.'},
+            {'day': 16, 'topic': 'Physics: Work, Energy, and Power', 'details': 'Work-energy theorem, conservation of energy.'},
+            {'day': 17, 'topic': 'Chemistry: Thermodynamics', 'details': 'First law, enthalpy.'},
+            {'day': 18, 'topic': 'Chemistry: Equilibrium', 'details': 'Chemical and ionic equilibrium.'},
+            {'day': 19, 'topic': 'Biology: Morphology of Flowering Plants', 'details': 'Root, stem, leaf.'},
+            {'day': 20, 'topic': 'Biology: Anatomy of Flowering Plants', 'details': 'Tissues, tissue systems.'},
+            {'day': 21, 'topic': 'Revision & Practice Test (Day 15-20)', 'details': 'Revise and test.'},
+             {'day': 22, 'topic': 'Physics: Rotational Motion', 'details': 'Moment of inertia, torque.'},
+            {'day': 23, 'topic': 'Physics: Gravitation', 'details': 'Universal law, Kepler\'s laws.'},
+            {'day': 24, 'topic': 'Chemistry: Redox Reactions', 'details': 'Oxidation states, balancing equations.'},
+            {'day': 25, 'topic': 'Chemistry: Hydrogen', 'details': 'Preparation, properties.'},
+            {'day': 26, 'topic': 'Biology: Cell: The Unit of Life', 'details': 'Cell organelles.'},
+            {'day': 27, 'topic': 'Biology: Biomolecules', 'details': 'Carbohydrates, proteins.'},
+            {'day': 28, 'topic': 'Revision & Practice Test (Day 22-27)', 'details': 'Revise and test.'},
+             {'day': 29, 'topic': 'Physics: Mechanical Properties of Solids', 'details': 'Stress, strain.'},
+            {'day': 30, 'topic': 'Physics: Mechanical Properties of Fluids', 'details': 'Pressure, viscosity.'},
+            {'day': 31, 'topic': 'Chemistry: s-Block Elements', 'details': 'Alkali and alkaline earth metals.'},
+            {'day': 32, 'topic': 'Chemistry: p-Block Elements (Group 13 & 14)', 'details': 'Boron, Carbon family.'},
+            {'day': 33, 'topic': 'Biology: Cell Cycle and Cell Division', 'details': 'Mitosis, Meiosis.'},
+            {'day': 34, 'topic': 'Biology: Photosynthesis in Higher Plants', 'details': 'Light and dark reactions.'},
+            {'day': 35, 'topic': 'Revision & Practice Test (Day 29-34)', 'details': 'Revise and test.'},
+             {'day': 36, 'topic': 'Physics: Thermal Properties of Matter', 'details': 'Heat transfer.'},
+            {'day': 37, 'topic': 'Physics: Thermodynamics (Physics)', 'details': 'Laws of thermodynamics.'},
+            {'day': 38, 'topic': 'Chemistry: p-Block Elements (Group 15 & 16)', 'details': 'Nitrogen, Oxygen family.'},
+            {'day': 39, 'topic': 'Chemistry: p-Block Elements (Group 17 & 18)', 'details': 'Halogens, Noble gases.'},
+            {'day': 40, 'topic': 'Biology: Respiration in Plants', 'details': 'Glycolysis, Kreb\'s cycle.'},
+            {'day': 41, 'topic': 'Biology: Plant Growth and Development', 'details': 'Plant hormones.'},
+            {'day': 42, 'topic': 'Revision & Practice Test (Day 36-41)', 'details': 'Revise and test.'},
+             {'day': 43, 'topic': 'Physics: Kinetic Theory', 'details': 'Ideal gas equation.'},
+            {'day': 44, 'topic': 'Physics: Oscillations', 'details': 'Simple harmonic motion.'},
+            {'day': 45, 'topic': 'Chemistry: d- and f-Block Elements', 'details': 'Transition and inner-transition metals.'},
+            {'day': 46, 'topic': 'Chemistry: Coordination Compounds', 'details': 'Nomenclature, bonding.'},
+            {'day': 47, 'topic': 'Biology: Digestion and Absorption', 'details': 'Human digestive system.'},
+            {'day': 48, 'topic': 'Biology: Breathing and Exchange of Gases', 'details': 'Respiratory system.'},
+            {'day': 49, 'topic': 'Revision & Practice Test (Day 43-48)', 'details': 'Revise and test.'},
+             {'day': 50, 'topic': 'Physics: Waves', 'details': 'Transverse and longitudinal waves.'},
+            {'day': 51, 'topic': 'Physics: Ray Optics and Optical Instruments', 'details': 'Reflection, refraction.'},
+            {'day': 52, 'topic': 'Chemistry: Haloalkanes and Haloarenes', 'details': 'Preparation, properties.'},
+            {'day': 53, 'topic': 'Chemistry: Alcohols, Phenols and Ethers', 'details': 'Nomenclature, reactions.'},
+            {'day': 54, 'topic': 'Biology: Body Fluids and Circulation', 'details': 'Blood, heart.'},
+            {'day': 55, 'topic': 'Biology: Excretory Products and their Elimination', 'details': 'Kidneys, urine formation.'},
+            {'day': 56, 'topic': 'Revision & Practice Test (Day 50-55)', 'details': 'Revise and test.'},
+             {'day': 57, 'topic': 'Physics: Wave Optics', 'details': 'Interference, diffraction.'},
+            {'day': 58, 'topic': 'Physics: Dual Nature of Radiation and Matter', 'details': 'Photoelectric effect.'},
+            {'day': 59, 'topic': 'Chemistry: Aldehydes, Ketones and Carboxylic Acids', 'details': 'Nomenclature, reactions.'},
+            {'day': 60, 'topic': 'Final Revision & Full Syllabus Mock Test', 'details': 'Comprehensive revision of all topics and a full-length test.'},
+        ];
+
+        // Dummy Flashcard Subjects Data (Same as Flutter)
+        const subjects = [
+            {'title': 'Physics', 'summary': 'Key formulas and concepts.'},
+            {'title': 'Chemistry', 'summary': 'Important reactions and structures.'},
+            {'title': 'Biology', 'summary': 'Diagrams, definitions, and facts.'},
+            {'title': 'Organic Chemistry', 'summary': 'Reaction mechanisms.'},
+            {'title': 'Inorganic Chemistry', 'summary': 'Properties and trends.'},
+            {'title': 'Physical Chemistry', 'summary': 'Numerical problems.'},
+            {'title': 'Botany', 'summary': 'Plant-related topics.'},
+            {'title': 'Zoology', 'summary': 'Animal-related topics.'},
+        ];
+
+
+        // Function to show a specific content section within the app layout
+        function showContentSection(sectionId) {
+             document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Function to navigate within the app layout
+        function navigateTo(sectionId, title) {
+            showContentSection(sectionId);
+            appTitle.textContent = title; // Update header title
+             // Update active state in bottom nav
+            navItems.forEach(item => {
+                if (item.getAttribute('data-section') === sectionId) {
+                    item.classList.add('text-blue-600');
+                    item.classList.remove('text-gray-500');
+                } else {
+                     item.classList.remove('text-blue-600');
+                    item.classList.add('text-gray-500');
+                }
+            });
+        }
+
+        // Handle Bottom Navigation Clicks
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const sectionId = this.getAttribute('data-section');
+                const title = this.getAttribute('data-title');
+                navigateTo(sectionId, title);
+            });
+        });
+
+        // Handle Study Planner Expansion
+        function toggleExpansion(element) {
+            element.closest('.study-plan-item').classList.toggle('expanded');
+        }
+
+        // Function to render Study Plan items
+        function renderStudyPlan() {
+            studyPlanList.innerHTML = ''; // Clear previous content
+            dailyPlans.forEach(plan => {
+                const itemHtml = `
+                    <div class="bg-white p-4 rounded-lg shadow-md mb-4 study-plan-item">
+                        <div class="flex items-center justify-between expandable-header" onclick="toggleExpansion(this)">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-day text-blue-600 text-lg mr-3"></i>
+                                <span class="text-gray-800 font-medium">Day ${plan.day}: ${plan.topic}</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                        </div>
+                        <div class="expandable-content">
+                            <p class="text-gray-600">${plan.details}</p>
+                             </div>
+                    </div>
+                `;
+                studyPlanList.innerHTML += itemHtml;
+            });
+        }
+
+         // Function to render Flashcard Subject cards
+        function renderFlashcards() {
+            flashcardsGrid.innerHTML = ''; // Clear previous content
+            subjects.forEach(subject => {
+                const cardHtml = `
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center cursor-pointer hover:bg-gray-50" onclick="alert('${subject.title} Flashcards Coming Soon!')">
+                        <i class="fas fa-book text-blue-600 text-4xl mb-3"></i>
+                        <p class="text-gray-800 font-medium text-lg mb-1">${subject.title}</p>
+                        <p class="text-gray-600 text-sm">${subject.summary}</p>
+                    </div>
+                `;
+                flashcardsGrid.innerHTML += cardHtml;
+            });
+        }
+
+        // Removed Logout function
+
+        // Initial setup - Directly show the app layout and navigate to dashboard
+        showContentSection('dashboard-section'); // Show dashboard content initially
+        renderStudyPlan(); // Render study plan on load (it's hidden initially)
+        renderFlashcards(); // Render flashcards on load (it's hidden initially)
+
+    </script>
+
+</body>
+</html>
