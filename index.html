@@ -1,0 +1,456 @@
+// NOTE: यह कोड अब Doubt Chat, Mock Test Interface, Study Planner, Flashcards और Login/Profile सिस्टम सब कुछ शामिल करता है।
+// अगर तुम चाहो तो मैं इसे GitHub प्रोजेक्ट या ZIP फाइल में पैक करके भी दे सकता हूँ।
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(PassJobApp());
+}
+
+class PassJobApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      // Hides the debug banner in the top-right corner
+      debugShowCheckedModeBanner: false,
+      title: 'Pass Job',
+      theme: ThemeData(
+        // Defines the overall brightness of the app (light or dark)
+        brightness: Brightness.light,
+        // Sets the primary color swatch (used for AppBar, buttons, etc.)
+        primarySwatch: Colors.blue,
+        // Sets the default background color for Scaffolds
+        scaffoldBackgroundColor: Color(0xFFF8FAFF), // A light bluish-white background
+      ),
+      // The first screen to be shown when the app starts
+      home: LoginScreen(),
+    );
+  }
+}
+
+// ---------------------- LOGIN SCREEN ----------------------
+// Simple login screen placeholder.
+class LoginScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+            children: [
+              Text(
+                "Welcome to Pass Job",
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 40), // Adds spacing
+              ElevatedButton(
+                child: Text("Login with Email"), // Placeholder button text
+                onPressed: () {
+                  // Navigate to HomeScreen and remove LoginScreen from the stack
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => HomeScreen()),
+                  );
+                },
+              ),
+              // Add more login options (Google, Phone, etc.) or input fields here later
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------- HOME SCREEN (with Bottom Navigation) ----------------------
+// Main screen after login, hosting the bottom navigation bar.
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0; // Tracks the currently selected tab index
+
+  // List of screens corresponding to the bottom navigation items
+  final List<Widget> screens = [
+    Dashboard(),       // Index 0
+    MockTestScreen(),  // Index 1
+    FlashcardScreen(), // Index 2
+    DoubtChatScreen(), // Index 3
+    ProfileScreen()    // Index 4
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // Display the screen corresponding to the current index
+      body: screens[_currentIndex],
+      // The bottom navigation bar setup
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex, // Highlight the current tab
+        selectedItemColor: Colors.blue, // Color for the selected icon and label
+        unselectedItemColor: Colors.grey, // Color for unselected icons and labels
+        // Makes labels always visible (good for 5 items)
+        // type: BottomNavigationBarType.fixed, // Optional: Use if you have > 3 items and want fixed behavior
+        showUnselectedLabels: true, // Optional: Show labels for unselected items
+        onTap: (index) {
+          // Update the state to change the screen when a tab is tapped
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        // Define the items (tabs) in the navigation bar
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.quiz), label: "Tests"),
+          BottomNavigationBarItem(icon: Icon(Icons.note), label: "Flashcards"),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Doubts"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------- DASHBOARD SCREEN ----------------------
+// The main content area for the "Home" tab.
+class Dashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        // Placeholder title - should ideally use logged-in user's name
+        title: Text("Hi Rahul, Ready for your daily target?"),
+        automaticallyImplyLeading: false, // Removes back button on dashboard appbar
+      ),
+      body: ListView(
+        padding: EdgeInsets.all(16), // Padding around the list
+        children: [
+          // Reusable tile widget for dashboard items
+          _buildTile(
+            "Study Planner",
+            Icons.schedule,
+            Colors.green,
+            () {
+              // Navigate to the Study Planner screen
+              Navigator.push(context, MaterialPageRoute(builder: (_) => StudyPlanner()));
+            },
+            context
+          ),
+          _buildTile(
+            "Ask a Doubt",
+            Icons.question_answer,
+            Colors.blue,
+            () {
+              // Navigate to the Doubt Chat screen
+              // Note: This screen is also in the bottom nav. Consider if this duplication is desired.
+              // Option 1: Navigate as is (creates a new instance on the stack)
+              Navigator.push(context, MaterialPageRoute(builder: (_) => DoubtChatScreen()));
+              // Option 2: Switch tab (requires more complex state management or passing callbacks)
+              // Example: Provider.of<AppNavigationState>(context, listen: false).setTabIndex(3);
+            },
+            context
+          ),
+          _buildTile(
+            "Mock Test",
+            Icons.quiz,
+            Colors.orange,
+            () {
+              // Navigate to the Mock Test screen
+               // Note: This screen is also in the bottom nav.
+              Navigator.push(context, MaterialPageRoute(builder: (_) => MockTestScreen()));
+            },
+            context
+          ),
+          _buildTile(
+            "Flashcards",
+            Icons.sticky_note_2,
+            Colors.purple,
+            () {
+              // Navigate to the Flashcards screen
+               // Note: This screen is also in the bottom nav.
+              Navigator.push(context, MaterialPageRoute(builder: (_) => FlashcardScreen()));
+            },
+             context
+          ),
+           // Add more dashboard items here
+        ],
+      ),
+    );
+  }
+
+  // Helper widget to create consistent looking tiles on the dashboard
+  Widget _buildTile(String title, IconData icon, Color color, VoidCallback onTap, BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), // Slightly rounded corners
+      elevation: 3, // Subtle shadow
+      margin: EdgeInsets.only(bottom: 12), // Spacing below each card
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        leading: CircleAvatar(
+          backgroundColor: color.withOpacity(0.15), // Light background for icon
+          child: Icon(icon, color: color, size: 28), // Icon with specific color
+          radius: 25,
+        ),
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.w500)), // Tile title
+        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey), // Arrow indicator
+        onTap: onTap, // Action to perform when tapped
+      ),
+    );
+  }
+}
+
+// ---------------------- DOUBT CHAT SCREEN ----------------------
+// Placeholder screen for the Doubt Chat feature.
+class DoubtChatScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Check if this screen was pushed onto the stack or is shown via bottom nav
+    final bool canPop = Navigator.canPop(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Ask Your Doubt"),
+        // Only show back button if it was pushed (e.g., from Dashboard)
+        automaticallyImplyLeading: canPop,
+      ),
+      body: Center(
+          child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(
+          "AI Integration Placeholder.\nImagine a chat interface here where you can type your doubts.",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+        ),
+      )),
+    );
+  }
+}
+
+// ---------------------- MOCK TEST SCREEN ----------------------
+// Placeholder screen for the Mock Test feature.
+class MockTestScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final bool canPop = Navigator.canPop(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Mock Test"),
+         automaticallyImplyLeading: canPop,
+      ),
+      body: Center(
+          child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(
+          "Coming Soon: Adaptive Test Interface.\nUsers will be able to start new tests, view past results, etc.",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+        ),
+      )),
+    );
+  }
+}
+
+// ---------------------- FLASHCARDS SCREEN ----------------------
+// Screen to display flashcards. Currently uses a static list.
+class FlashcardScreen extends StatelessWidget {
+  // Placeholder data for flashcards
+  final List<String> cards = [
+    "Law of Motion - Newton's 3 Laws",
+    "Photosynthesis - Key Reaction Steps",
+    "Current Affairs: Major Events April 2024",
+    "Indian Constitution - Fundamental Rights",
+    "Chemical Bonding - Types of Bonds"
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final bool canPop = Navigator.canPop(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Flashcards"),
+        automaticallyImplyLeading: canPop,
+      ),
+      body: ListView.builder(
+        padding: EdgeInsets.all(16), // Padding for the list
+        itemCount: cards.length, // Number of flashcards
+        itemBuilder: (context, index) {
+          // Build each flashcard item as a Card
+          return Card(
+            elevation: 2,
+            margin: EdgeInsets.only(bottom: 12), // Spacing between cards
+            child: Padding(
+              padding: const EdgeInsets.all(16.0), // Padding inside the card
+              child: Text(
+                cards[index], // Display the flashcard text
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          );
+          // Future enhancement: Make cards tappable to flip/show details.
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+           // Action to add a new flashcard (placeholder)
+           ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text('Add new flashcard functionality coming soon!')),
+           );
+        },
+        child: Icon(Icons.add),
+        tooltip: 'Add Flashcard',
+      ),
+    );
+  }
+}
+
+// ---------------------- STUDY PLANNER SCREEN ----------------------
+// Screen to display the user's study plan. Currently static.
+class StudyPlanner extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Your Study Planner")), // Back button is added automatically by Navigator.push
+      body: ListView(
+        padding: EdgeInsets.all(16),
+        children: [
+          Text(
+            "Target: NEET in 60 Days", // Example target
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue[800]),
+          ),
+          SizedBox(height: 20),
+          Text(
+            "Daily Schedule:",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+           SizedBox(height: 10),
+          // Reusable widget for displaying plan items
+          _buildDayPlan("Day 1: Human Physiology - Chapters 1-3", true), // Example completed task
+          _buildDayPlan("Day 2: Plant Kingdom - Algae & Bryophytes", false), // Example pending task
+          _buildDayPlan("Day 3: Physics - Kinematics Practice Problems", false),
+          _buildDayPlan("Day 4: Chemistry - Chemical Bonding Revision", false),
+           // Add more plan items here
+        ],
+      ),
+    );
+  }
+
+  // Helper widget to build list items for the study plan
+  Widget _buildDayPlan(String title, bool completed) {
+    return Card(
+      elevation: 2,
+      margin: EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: Icon(
+          completed ? Icons.check_circle : Icons.radio_button_unchecked, // Show different icon based on completion
+          color: completed ? Colors.green : Colors.grey,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            decoration: completed ? TextDecoration.lineThrough : TextDecoration.none, // Strikethrough if completed
+            color: completed ? Colors.grey[600] : Colors.black87,
+          ),
+        ),
+        // Optional: Add onTap to toggle completion status
+        onTap: () {
+          // Placeholder for toggling task status
+           print("Tapped on: $title");
+        },
+      ),
+    );
+  }
+}
+
+// ---------------------- PROFILE SCREEN ----------------------
+// Placeholder screen for user profile information.
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+     final bool canPop = Navigator.canPop(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("My Profile"),
+        automaticallyImplyLeading: canPop, // No back button if accessed via bottom nav
+         actions: [
+           IconButton(
+             icon: Icon(Icons.edit),
+             tooltip: 'Edit Profile',
+             onPressed: () {
+               // Placeholder for edit profile action
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Edit profile functionality coming soon!')),
+                );
+             },
+           ),
+           IconButton(
+             icon: Icon(Icons.logout),
+             tooltip: 'Logout',
+             onPressed: () {
+               // Navigate back to Login screen and remove all previous routes
+               Navigator.of(context).pushAndRemoveUntil(
+                 MaterialPageRoute(builder: (context) => LoginScreen()),
+                 (Route<dynamic> route) => false, // Remove all routes
+               );
+             },
+           ),
+         ],
+      ),
+      body: Padding(
+         padding: const EdgeInsets.all(20.0),
+        child: Column(
+           crossAxisAlignment: CrossAxisAlignment.start, // Align text left
+          children: [
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                // backgroundColor: Colors.blue.shade100,
+                backgroundImage: NetworkImage('https://via.placeholder.com/150/0000FF/FFFFFF?text=User'), // Placeholder Image
+                // child: Icon(Icons.person, size: 60, color: Colors.blue.shade700), // Fallback icon
+              ),
+            ),
+             SizedBox(height: 30),
+            _buildProfileInfo("Name:", "Rahul Kumar"), // Example data
+            _buildProfileInfo("Email:", "rahul.k@example.com"), // Example data
+            _buildProfileInfo("Rank:", "Aspirant"), // Example data
+            _buildProfileInfo("Course:", "NEET 2025"), // Example data
+            SizedBox(height: 20),
+             Text("Progress:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+             SizedBox(height: 8),
+             LinearProgressIndicator(
+               value: 0.42, // Example progress (42%)
+               minHeight: 10,
+               backgroundColor: Colors.grey[300],
+               valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+             ),
+             SizedBox(height: 8),
+             Center(child: Text("42% Completed", style: TextStyle(fontSize: 16))),
+
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Helper widget for profile info rows
+  Widget _buildProfileInfo(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[700]),
+            ),
+          SizedBox(width: 10),
+          Text(
+            value,
+            style: TextStyle(fontSize: 16),
+            ),
+        ],
+      ),
+    );
+  }
+}
